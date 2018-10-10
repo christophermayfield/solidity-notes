@@ -1,0 +1,167 @@
+{\rtf1\ansi\ansicpg1252\cocoartf1671
+{\fonttbl\f0\fswiss\fcharset0 Helvetica;\f1\fnil\fcharset0 Menlo-Italic;\f2\fnil\fcharset0 Menlo-Regular;
+}
+{\colortbl;\red255\green255\blue255;\red74\green80\blue93;\red0\green0\blue0;\red155\green162\blue177;
+\red184\green93\blue213;\red81\green156\blue233;\red0\green0\blue0;}
+{\*\expandedcolortbl;;\cssrgb\c36078\c38824\c43922;\csgray\c0\c0;\cssrgb\c67059\c69804\c74902;
+\cssrgb\c77647\c47059\c86667;\cssrgb\c38039\c68235\c93333;\cssrgb\c0\c0\c0;}
+\margl1440\margr1440\vieww10800\viewh8400\viewkind0
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\f0\fs24 \cf0 functions: do stuff, you know this\
+public - anyone or any other contract can call your contracts function and execute its code.\
+\
+convention to start private function names with an _ \
+you also put the private keyword after the function name \
+\
+view function - its only viewing the data but not modifying it\
+pure function - your\'92e not even accessing any data in the app. \
+\
+Go through the lesson again. \
+\
+Check out the OpenZepplin library \
+\
+Events - are a way for your contract to communicate that something happened on the blockchain to your app front-end, which can be \'91listening\'92 for certain events and take action when they happen.\
+\
+\
+Example:\
+\
+\pard\pardeftab720\sl320\partightenfactor0
+
+\f1\i\fs28\fsmilli14400 \cf2 \cb3 \expnd0\expndtw0\kerning0
+// declare the event
+\f2\i0 \cf4 \
+\pard\pardeftab720\sl320\partightenfactor0
+\cf5 event\cf4  \cf6 IntegersAdded\cf4 (\cf5 uint\cf4  x, \cf5 uint\cf4  y, \cf5 uint\cf4  result);\
+\
+\cf5 function\cf4  \cf6 add\cf4 (\cf5 uint\cf4  _x, \cf5 uint\cf4  _y) \cf5 public\cf4  \{\
+  \cf5 uint\cf4  result = _x + _y;\
+  
+\f1\i \cf2 // fire an event to let the app know the function was called:
+\f2\i0 \cf4 \
+  IntegersAdded(_x, _y, result);\
+  \cf5 return\cf4  result;\
+\}\
+\
+\pard\pardeftab720\sl320\partightenfactor0
+
+\f0\fs24 \cf4 \
+\cf7 Your app front-end could then listen for the event. A JS implementation would look something like: \
+\
+YourContrat.IntegersAdded(function(error, result) \{\
+	//do something what that result\
+\})
+\f2\fs28\fsmilli14400 \cf4 \
+\
+\
+\cf7 Mappings \
+\
+Mappings are essentially a key-value store for storing and looking up data. In the first example, the key is an address and the value is a uint, and in the second example, the key is a uint and the value is a string.\
+\
+mapping (address => uint) public accountBalance;\
+\
+mapping (uint => string) userIdToName;\
+\
+\
+msg.sender\
+\
+this is a global variable that is available to all functions, which refers to the address of the person (or smart contract) who called the current function. \
+\
+In solidity, function execution always needs to start with an external caller. A contract will just sit on the blockchain doing nothing until someone calls one of the functions. So there will always be a msg.sender.\
+\
+\
+Require \
+\
+require makes it so that the function will throw an error and stop executing if some condition is not true:\
+\
+require(keccak256(_name) == keccak256(\'93Chris));\
+\
+\
+Inheritance \
+\
+use the word is to inherit from a superclass\
+\
+\
+Internal and External \
+\
+In addition to public and private, Solidity has two more types of visibility for functions: internal and external \
+\
+Internal is the same as private, except that it\'92s also accessible to contracts that inherit from this contract. \
+\
+External is similar to public, except that these functions can ONLY be called outside the contract - they can\'92t be called by other functions inside that contract. We\'92ll talk about why you might want to use enteral vs public later. \
+\
+For declaring internal or external functions, the syntax is the same as private or public. \
+\
+Interfaces \
+\
+Four our contract to talk to another contract on the blockchain that we don\'92t own, first we need to define an interface. \
+\
+lets define an interface of the LuckyNumber contract: \
+\
+contract NumberInterface \{\
+	function getNum(address _myAddress) public view returns (uint)\
+\}\
+\
+\
+Notice that this looks like defining a contract, with a few differences. For one, we\'92re only declaring the functions that we want to interact with - in this case getNum - and we don\'92t mention any of the other functions or state variables. \
+\
+\
+Using an Interface:\
+\
+We can use it in a contract as follows:\
+\
+contract MyContract\{\
+\
+	address NumberInterfaceAddress = 0xab384543593475a\
+	\
+NumberInterface numberContract = NumberInterface(NumberInterfaceAddress)\
+\
+\}\
+\
+Constructors: function Ownable() a constructor, which is an optional special function that has the same name as the contract. It will get execute only one time, when the contract is first created. \
+\
+Function Modifiers: modifier onlyOwner(). Modifiers are kind of half-functions that are used to modify other functions, usually to check some requirements prior to execution. In this case, onlyOwner can be used to limit access so ONLY the OWNER of the contract can run this function. \
+\
+\
+Inheritance:\
+\
+ZombieFeeding is ZombieFactory\
+ZombieFactory is Ownable\
+\
+Thus ZombieFeeding is also Ownable, and can access the functions/events/modifiers from the Ownable contract. This applies to any contracts that inherit from ZombieFeeding in the future as well. \
+\
+Function Modfiers: A function modifier looks just like a function, but uses the keyword modifier instead of the keyword function. And it can\'92t be called directly like a function can - instead we can attach the modifiers name at the end fo the function definition to change that functions behavior. \
+\
+example: \
+\
+modifier onlyOwner() \{\
+\
+	require(msg.sender == owner);\
+	_;\
+\}\
+\
+We would use the modifier as follows: \
+\
+contract MyContract is Ownable\{\
+\
+	event LaughManiacally(string laugher);\
+\
+	//Note the usage of \'91onlyOwner below:\
+	\
+	function likeABoss() external onlyOwner \{\
+		LaughManiacally(\'93muahaha\'94);\
+	\}\
+\}\
+\
+	Notice the onlyOwner modifier on the likeABoss function. When you call likeAboss, the code inside onlyOwner executes first. Then when it hits the _; statement in onlyOwner, it goes back and executes the code inside likeABoss.\
+\
+\
+Gas\
+\
+Gas - the fuel Ethereum DApps run on\
+\
+In solidity, your users have to pay every time they execute a function on your DApp using a currently called gas. Users buy gas with Ether (the currency on Ethereum), so your users h ave to spend ETH in order to execute functions on your DApp.\
+\
+\
+\
+}
