@@ -182,6 +182,20 @@ But in Ethereum, because both the money (Ether), the data (transcation payload) 
 \
 This allows for some really interesting logic, like requiring a certain payment to the contract in order to execute the function. \
 \
+Withdrawls\
 \
+We learned how to send Ether to a contract. So what happens after you send it?\
+\
+After you send Ether to a contract, it gets stored in the contract\'92s Ethereum account, and it will be trapped here - unless you add a function to withdraw the Ether from the contract. \
+\
+You can write a function to withdraw Ether from the contract as follows: \
+\
+contract GetPaid is Ownable \{\
+	function withdraw() external ownlyOwner \{\
+		owner.transfer(this.balance);\
+	\}\
+\}\
+\
+Note that we\'92re using owner and onlyOwner from the Ownable contract, assuming that was imported. \
 \
 }
