@@ -166,6 +166,10 @@ Visibility Modifiers:\
 \
 These control when and where the function can be called from: private means it\'92s only callable from other functions inside of the contract. Internal is like private, but can also be called by contracts that inherit from this one; external can only be called outside of the contract; and finally public can be called anywhere internally and externally. \
 \
+State Modifiers:\
+\
+We also have state modifiers, which tell us how the function interacts with the BlockChain: view tells us that by running the function, no data will be saved/changed. pure tells us that not only does the function not save any data to the blockchain, but it doesn\'92t read any data from the blockchain. Both of these don\'92t cost any gas to call if they\'92re called externally from outside of the contract (but they do cost gas if called internally by another function)\
+\
 \
 \
 }
