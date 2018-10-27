@@ -1,12 +1,17 @@
 {\rtf1\ansi\ansicpg1252\cocoartf1671
 {\fonttbl\f0\fswiss\fcharset0 Helvetica;\f1\fnil\fcharset0 Menlo-Italic;\f2\fnil\fcharset0 Menlo-Regular;
+\f3\fnil\fcharset0 HelveticaNeue;\f4\fnil\fcharset0 HelveticaNeue-Bold;\f5\fnil\fcharset0 HelveticaNeue-Light;
 }
 {\colortbl;\red255\green255\blue255;\red74\green80\blue93;\red0\green0\blue0;\red155\green162\blue177;
 \red184\green93\blue213;\red81\green156\blue233;\red0\green0\blue0;\red33\green255\blue255;\red74\green80\blue93;
-\red155\green162\blue177;\red184\green93\blue213;\red197\green136\blue83;\red223\green180\blue104;}
+\red155\green162\blue177;\red184\green93\blue213;\red197\green136\blue83;\red223\green180\blue104;\red196\green200\blue209;
+\red28\green30\blue36;\red70\green137\blue204;\red20\green21\blue26;\red255\green255\blue255;\red11\green97\blue255;
+}
 {\*\expandedcolortbl;;\cssrgb\c36078\c38824\c43922;\csgray\c0\c0;\cssrgb\c67059\c69804\c74902;
 \cssrgb\c77647\c47059\c86667;\cssrgb\c38039\c68235\c93333;\cssrgb\c0\c0\c0;\cssrgb\c0\c99144\c100000;\cssrgb\c36078\c38824\c43922;
-\cssrgb\c67059\c69804\c74902;\cssrgb\c77647\c47059\c86667;\cssrgb\c81961\c60392\c40000;\cssrgb\c90196\c75294\c48235;}
+\cssrgb\c67059\c69804\c74902;\cssrgb\c77647\c47059\c86667;\cssrgb\c81961\c60392\c40000;\cssrgb\c90196\c75294\c48235;\cssrgb\c81176\c82353\c85490;
+\cssrgb\c14510\c15686\c18824;\cssrgb\c33725\c61176\c83922;\cssrgb\c10196\c10980\c13333;\cssrgb\c100000\c100000\c100000;\cssrgb\c0\c48235\c100000;
+}
 \margl1440\margr1440\vieww10800\viewh8400\viewkind0
 \pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
 
@@ -227,4 +232,53 @@ What this would do is take the timestamp of now, the msg. sender, and an increme
 \
 It would then use keccak to convert these inputs to a random hash, convert that has to a uint, and then use %100 to take only the last 2 digits, giving us a totally random number between 0 and 99. \
 \
+This method is vulnerable to attack by a dishonest node. \
+\
+\pard\pardeftab720\sl360\partightenfactor0
+
+\f3\fs32 \cf14 \cb15 \outl0\strokewidth0 \strokec14 n Ethereum, when you call a function on a contract, you broadcast it to a node or nodes on the network as a\'a0
+\f4\b \cf16 \strokec16 transaction
+\f3\b0 \cf14 \strokec14 . The nodes on the network then collect a bunch of transactions, try to be the first to solve a computationally-intensive mathematical problem as a "Proof of Work", and then publish that group of transactions along with their Proof of Work (PoW) as a\'a0
+\f4\b \cf16 \strokec16 block
+\f3\b0 \cf14 \strokec14 \'a0to the rest of the network.\
+\
+\
+\
+\pard\pardeftab720\sl360\sa240\partightenfactor0
+\cf14 Once a node has solved the PoW, the other nodes stop trying to solve the PoW, verify that the other node's list of transactions are valid, and then accept the block and move on to trying to solve the next block.\
+\pard\pardeftab720\sl380\sa240\partightenfactor0
+
+\f4\b \cf14 This makes our random number function exploitable.
+\f3\b0 \
+\pard\pardeftab720\sl360\sa240\partightenfactor0
+\cf14 Let's say we had a coin flip contract \'97 heads you double your money, tails you lose everything. Let's say it used the above random function to determine heads or tails. (
+\f2\fs28\fsmilli14400 \cf11 \cb17 \strokec11 random >= 50
+\f3\fs32 \cf14 \cb15 \strokec14 \'a0is heads,\'a0
+\f2\fs28\fsmilli14400 \cf11 \cb17 \strokec11 random < 50
+\f3\fs32 \cf14 \cb15 \strokec14 is tails).\
+If I were running a node, I could publish a transaction\'a0
+\f4\b only to my own node
+\f3\b0 \'a0and not share it. I could then run the coin flip function to see if I won \'97 and if I lost, choose not to include that transaction in the next block I'm solving. I could keep doing this indefinitely until I finally won the coin flip and solved the next block, and profit.\
+\
+\
+\pard\pardeftab720\sl720\sa200\partightenfactor0
+
+\f5\fs48 \cf18 \strokec18 So how do we generate random numbers safely in Ethereum?\
+\pard\pardeftab720\sl360\sa240\partightenfactor0
+
+\f3\fs32 \cf14 \strokec14 Because the entire contents of the blockchain are visible to all participants, this is a hard problem, and its solution is beyond the scope of this tutorial. You can read\'a0{\field{\*\fldinst{HYPERLINK "https://ethereum.stackexchange.com/questions/191/how-can-i-securely-generate-a-random-number-in-my-smart-contract"}}{\fldrslt \cf19 \strokec19 this StackOverflow thread}}\'a0for some ideas. One idea would be to use an\'a0
+\f4\b \cf16 \strokec16 oracle
+\f3\b0 \cf14 \strokec14 \'a0to access a random number function from outside of the Ethereum blockchain.\
+Of course, since tens of thousands of Ethereum nodes on the network are competing to solve the next block, my odds of solving the next block are extremely low. It would take me a lot of time or computing resources to exploit this profitably \'97 but if the reward were high enough (like if I could bet $100,000,000 on the coin flip function), it would be worth it for me to attack.\
+So while this random number generation is NOT secure on Ethereum, in practice unless our random function has a lot of money on the line, the users of your game likely won't have enough resources to attack it.\
+Because we're just building a simple game for demo purposes in this tutorial and there's no real money on the line, we're going to accept the tradeoffs of using a random number generator that is simple to implement, knowing that it isn't totally secure.\
+In a future lesson, we may cover using\'a0
+\f4\b \cf16 \strokec16 oracles
+\f3\b0 \cf14 \strokec14 \'a0(a secure way to pull data in from outside of Ethereum) to generate secure random numbers from outside the blockchain.\
+\
+\pard\pardeftab720\sl360\partightenfactor0
+
+\f2\fs28\fsmilli14400 \cf7 \cb3 \outl0\strokewidth0 \
+\pard\pardeftab720\sl320\partightenfactor0
+\cf7 \
 }
