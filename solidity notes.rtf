@@ -311,9 +311,12 @@ ERC721 tokens are not interchangeable since each one in assumed to be unique, an
 \
 \pard\pardeftab720\sl360\partightenfactor0
 
-\f6\i\fs32 \cf14 \cb15 \outl0\strokewidth0 \strokec14 Note that using a standard like ERC721 has the benefit that we don't have to implement the auction or escrow logic within our contract that determines how players can trade / sell our zombies. If we conform to the spec, someone else could build an exchange platform for crypto-tradable ERC721 assets, and our ERC721 zombies would be usable on that platform. So there are clear benefits to using a token standard instead of rolling your own trading logic.
+\f6\i\fs32 \cf14 \cb15 \outl0\strokewidth0 \strokec14 Note that using a standard like ERC721 has the benefit that we don't have to implement the auction or escrow logic within our contract that determines how players can trade / sell our zombies. If we conform to the spec, someone else could build an exchange platform for crypto-tradable ERC721 assets, and our ERC721 zombies would be usable on that platform. So there are clear benefits to using a token standard instead of rolling your own trading logic.\
+\
+\pard\pardeftab720\sl360\partightenfactor0
+
 \f2\i0\fs28\fsmilli14400 \cf7 \cb3 \outl0\strokewidth0 \
 \pard\pardeftab720\sl320\partightenfactor0
-\cf7 \
+\cf7 Remember, when using the ERC721 token standard, which means other contracts will expect our contract to have functions with these exact names defined. That\'92s what makes these standards useful - if another contract knows our contract is ERC721 compliant, it can simply talk to us without needing to know anything about our internal implementation decisions. \
 \
 }
